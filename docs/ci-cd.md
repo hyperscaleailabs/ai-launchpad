@@ -16,7 +16,9 @@ request to a published release.
 
 - **Lint & format** — `ruff check` and `ruff format --check`.
 - **Type check** — `mypy` in strict mode against `src`.
-- **Test** — `pytest` with coverage across a Python version matrix.
+- **Test** — `pytest` with coverage across a Python version matrix. A
+  **coverage gate** (`fail_under = 80` in `pyproject.toml`) fails the build if
+  total coverage drops below 80%.
 - **CI success** — an aggregate gate job. Configure branch protection to
   require this single check rather than every matrix combination.
 

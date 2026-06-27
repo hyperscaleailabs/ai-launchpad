@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ai-launchpad"
-version = "0.0.1"
+version = "0.1.0"
 description = "AI Launchpad"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -68,3 +68,6 @@ source = ["ai_launchpad"]
 
 [tool.coverage.report]
 show_missing = true
+# Coverage gate: CI (and local `pytest --cov`) fails if total coverage
+# drops below this threshold.
+fail_under = 80
