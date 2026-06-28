@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../config";
+
+const offerings = [
+  {
+    title: "AI Strategy & Discovery",
+    body: "Workshops and audits to identify where AI creates real value in your business, prioritized by impact and feasibility, with a clear delivery roadmap.",
+    points: ["Use-case discovery", "Feasibility & ROI analysis", "Roadmap & team plan"],
+  },
+  {
+    title: "Rapid Prototyping",
+    body: "We build working prototypes fast so you can put AI in front of real users and learn before committing budget to a full build.",
+    points: ["Working demo in weeks", "User testing", "Go / no-go recommendation"],
+  },
+  {
+    title: "Production Engineering",
+    body: "We take prototypes to production-grade systems with the reliability, evaluation, and observability that AI products need to be trusted.",
+    points: ["Evaluation & guardrails", "Scalable deployment", "Monitoring & observability"],
+  },
+  {
+    title: "Team Enablement",
+    body: "Hands-on training and embedded support so your team can own and extend the AI systems we build together.",
+    points: ["Best-practice training", "Pairing & code review", "Long-term support"],
+  },
+];
+---
+
+<BaseLayout title="Offerings" description="What AI Launchpad offers — from strategy and prototyping to production engineering and team enablement.">
+  <section class="hero container">
+    <span class="eyebrow">Offerings</span>
+    <h1>How we help you ship AI</h1>
+    <p class="lead">
+      End-to-end support across the AI product lifecycle — pick the stage you
+      need, or partner with us the whole way.
+    </p>
+  </section>
+
+  <section class="container">
+    <div class="grid">
+      {
+        offerings.map((o) => (
+          <div class="card">
+            <h3>{o.title}</h3>
+            <p>{o.body}</p>
+            <ul style="margin-top:1rem;color:var(--text-muted)">
+              {o.points.map((p) => (
+                <li>{p}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="container" style="text-align:center">
+    <h2>Have a project in mind?</h2>
+    <p>Tell us what you're building and we'll show you how to get there faster.</p>
+    <a class="btn btn-primary" href={`mailto:${site.email}`}>Start a conversation</a>
+  </section>
+</BaseLayout>

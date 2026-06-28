@@ -1,0 +1,60 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../config";
+
+const values = [
+  { title: "Ship to learn", body: "We bias toward working software in front of real users over endless planning." },
+  { title: "Trust by design", body: "Evaluation, guardrails, and observability are part of the build, not an afterthought." },
+  { title: "Leave teams stronger", body: "We transfer knowledge so you own and extend what we build together." },
+];
+---
+
+<BaseLayout title="About" description="About AI Launchpad — who we are and how we work.">
+  <section class="hero container">
+    <span class="eyebrow">About</span>
+    <h1>About {site.name}</h1>
+    <p class="lead">
+      We're a team of engineers and product builders helping organizations turn
+      AI from experiment into dependable product.
+    </p>
+  </section>
+
+  <section class="container">
+    <div class="prose">
+      <h2>Our mission</h2>
+      <p>
+        The gap between an impressive AI demo and a reliable AI product is wide —
+        and it's where most projects stall. {site.name} exists to close that gap.
+        We pair deep engineering with pragmatic product thinking so teams can go
+        from idea to shipped, scaled, and trusted AI.
+      </p>
+
+      <h2>How we work</h2>
+      <p>
+        We work in tight, transparent cycles: discover the highest-value
+        opportunities, prototype quickly to validate, then engineer for
+        production. Throughout, we leave your team more capable than we found it.
+      </p>
+    </div>
+  </section>
+
+  <section class="container">
+    <h2>What we value</h2>
+    <div class="grid">
+      {
+        values.map((v) => (
+          <div class="card">
+            <h3>{v.title}</h3>
+            <p>{v.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="container" style="text-align:center">
+    <h2>Let's talk</h2>
+    <p>Questions, ideas, or a project to scope? We'd love to hear from you.</p>
+    <a class="btn btn-primary" href={`mailto:${site.email}`}>Email us</a>
+  </section>
+</BaseLayout>

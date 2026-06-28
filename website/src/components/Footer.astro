@@ -1,0 +1,26 @@
+---
+import { site } from "../config";
+const year = new Date().getFullYear();
+const socials = Object.entries(site.social).filter(([, url]) => url);
+---
+
+<footer class="site-footer">
+  <div class="container inner">
+    <span>&copy; {year} {site.name}. All rights reserved.</span>
+    <span>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+      {
+        socials.map(([name, url]) => (
+          <>
+            {" · "}
+            <a href={url} target="_blank" rel="noopener">
+              {name}
+            </a>
+          </>
+        ))
+      }
+      {" · "}
+      <a href="/rss.xml">RSS</a>
+    </span>
+  </div>
+</footer>

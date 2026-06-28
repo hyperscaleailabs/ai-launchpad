@@ -1,0 +1,10 @@
+# Netlify build settings for the AI Launchpad website.
+# In Netlify, set the site's "Base directory" to `website` (or use this file
+# from the repo root). Astro outputs a static site to website/dist.
+[build]
+  base = "website"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"

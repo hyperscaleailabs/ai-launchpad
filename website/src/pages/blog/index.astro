@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+---
+
+<BaseLayout title="Blog" description="News, ideas, and engineering notes from the AI Launchpad team.">
+  <section class="hero container">
+    <span class="eyebrow">Blog</span>
+    <h1>Ideas & updates</h1>
+    <p class="lead">News, lessons, and engineering notes from our work building AI products.</p>
+  </section>
+
+  <section class="container">
+    {
+      posts.length === 0 ? (
+        <p>No posts yet — check back soon.</p>
+      ) : (
+        <ul class="post-list">
+          {posts.map((post) => (
+            <li class="card">
+              <p class="post-meta">{fmt(post.data.pubDate)} · {post.data.author}</p>
+              <h3>
+                <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+              </h3>
+              <p>{post.data.description}</p>
+              {post.data.tags.length > 0 && (
+                <p style="margin-top:0.75rem">
+                  {post.data.tags.map((t) => (
+                    <span class="tag">{t}</span>
+                  ))}
+                </p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+</BaseLayout>
