@@ -7,6 +7,9 @@ dist/
 .vercel/
 .netlify/
 
+# CI-generated evidence (screenshots, summaries)
+evidence/
+
 # Logs & env
 npm-debug.log*
 .env

@@ -1,0 +1,94 @@
+name: Website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "website/**"
+      - ".github/workflows/website.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "website/**"
+      - ".github/workflows/website.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: website-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: website
+
+jobs:
+  build-and-verify:
+    name: Build & capture evidence
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Start preview server
+        run: |
+          npm run preview -- --port 4321 --host > preview.log 2>&1 &
+          echo "PREVIEW_PID=$!" >> "$GITHUB_ENV"
+
+      - name: Wait for server
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf -o /dev/null http://localhost:4321/; then
+              echo "Server is up."
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Server did not start in time. Logs:"
+          cat preview.log
+          exit 1
+
+      - name: Capture evidence (status checks + screenshots)
+        env:
+          PREVIEW_URL: http://localhost:4321
+        run: npm run screenshots
+
+      - name: Stop preview server
+        if: always()
+        run: kill "$PREVIEW_PID" 2>/dev/null || true
+
+      - name: Add evidence summary to job summary
+        if: always()
+        run: cat evidence/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Upload evidence artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-evidence
+          path: website/evidence/
+          if-no-files-found: warn
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-dist
+          path: website/dist/
+          if-no-files-found: error
