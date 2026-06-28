@@ -1,0 +1,17 @@
+# Astro / Node
+node_modules/
+dist/
+.astro/
+
+# Build / deploy
+.vercel/
+.netlify/
+
+# CI-generated evidence (screenshots, summaries)
+evidence/
+
+# Logs & env
+npm-debug.log*
+.env
+.env.production
+.DS_Store

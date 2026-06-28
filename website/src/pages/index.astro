@@ -1,0 +1,78 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { site } from "../config";
+
+const offerings = [
+  {
+    title: "AI Strategy & Discovery",
+    body: "We help you find the highest-leverage AI use cases and turn them into a concrete, fundable roadmap.",
+  },
+  {
+    title: "Rapid Prototyping",
+    body: "From idea to working demo in weeks. Validate with real users before committing to a full build.",
+  },
+  {
+    title: "Production Engineering",
+    body: "Robust, observable, and scalable AI systems — evaluation, guardrails, and deployment included.",
+  },
+];
+
+// Show the three most recent published posts on the home page.
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+---
+
+<BaseLayout>
+  <section class="hero container">
+    <span class="eyebrow">Hyperscale AI Labs</span>
+    <h1>{site.tagline}</h1>
+    <p class="lead">{site.description}</p>
+    <div>
+      <a class="btn btn-primary" href="/offerings/">Explore offerings</a>
+      <a class="btn btn-ghost" href={`mailto:${site.email}`}>Get in touch</a>
+    </div>
+  </section>
+
+  <section class="container">
+    <h2>What we do</h2>
+    <div class="grid">
+      {
+        offerings.map((o) => (
+          <div class="card">
+            <h3>{o.title}</h3>
+            <p>{o.body}</p>
+          </div>
+        ))
+      }
+    </div>
+    <p style="margin-top:1.5rem">
+      <a href="/offerings/">See all offerings →</a>
+    </p>
+  </section>
+
+  {
+    posts.length > 0 && (
+      <section class="container">
+        <h2>From the blog</h2>
+        <ul class="post-list">
+          {posts.map((post) => (
+            <li class="card">
+              <p class="post-meta">{fmt(post.data.pubDate)}</p>
+              <h3>
+                <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+              </h3>
+              <p>{post.data.description}</p>
+            </li>
+          ))}
+        </ul>
+        <p style="margin-top:1.5rem">
+          <a href="/blog/">Read the blog →</a>
+        </p>
+      </section>
+    )
+  }
+</BaseLayout>
