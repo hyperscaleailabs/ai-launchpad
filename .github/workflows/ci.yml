@@ -15,10 +15,20 @@ concurrency:
 permissions:
   contents: read
 
+# The Python package lives in packages/ai-launchpad/. Jobs that check out and
+# run against it set `working-directory` accordingly (below). The aggregate
+# `ci-success` job does no checkout, so it must NOT inherit that directory —
+# hence per-job defaults rather than a workflow-level default.
+# (Triggers stay unfiltered so the required `ci-success` check always reports,
+# even on website-only pull requests.)
+
 jobs:
   lint:
     name: Lint & format
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/ai-launchpad
     steps:
       - uses: actions/checkout@v4
 
@@ -27,6 +37,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: packages/ai-launchpad/pyproject.toml
 
       - name: Install dependencies
         run: |
@@ -42,6 +53,9 @@ jobs:
   typecheck:
     name: Type check
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/ai-launchpad
     steps:
       - uses: actions/checkout@v4
 
@@ -50,6 +64,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: packages/ai-launchpad/pyproject.toml
 
       - name: Install dependencies
         run: |
@@ -73,6 +88,9 @@ jobs:
             python-version: "3.12"
           - os: windows-latest
             python-version: "3.12"
+    defaults:
+      run:
+        working-directory: packages/ai-launchpad
     steps:
       - uses: actions/checkout@v4
 
@@ -81,6 +99,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
+          cache-dependency-path: packages/ai-launchpad/pyproject.toml
 
       - name: Install dependencies
         run: |
@@ -95,7 +114,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-xml
-          path: coverage.xml
+          path: packages/ai-launchpad/coverage.xml
           if-no-files-found: ignore
 
   # Single required status check that gates merges. Branch protection can

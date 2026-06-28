@@ -13,6 +13,10 @@ jobs:
   build:
     name: Build distribution
     runs-on: ubuntu-latest
+    # The Python package lives in packages/ai-launchpad/.
+    defaults:
+      run:
+        working-directory: packages/ai-launchpad
     steps:
       - uses: actions/checkout@v4
 
@@ -35,7 +39,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dist
-          path: dist/
+          # path is relative to the workspace root, not working-directory.
+          path: packages/ai-launchpad/dist/
 
   publish-pypi:
     name: Publish to PyPI
