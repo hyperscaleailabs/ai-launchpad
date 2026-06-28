@@ -15,17 +15,20 @@ concurrency:
 permissions:
   contents: read
 
-# The Python package lives in packages/ai-launchpad/. Run all steps there.
+# The Python package lives in packages/ai-launchpad/. Jobs that check out and
+# run against it set `working-directory` accordingly (below). The aggregate
+# `ci-success` job does no checkout, so it must NOT inherit that directory —
+# hence per-job defaults rather than a workflow-level default.
 # (Triggers stay unfiltered so the required `ci-success` check always reports,
 # even on website-only pull requests.)
-defaults:
-  run:
-    working-directory: packages/ai-launchpad
 
 jobs:
   lint:
     name: Lint & format
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/ai-launchpad
     steps:
       - uses: actions/checkout@v4
 
@@ -50,6 +53,9 @@ jobs:
   typecheck:
     name: Type check
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/ai-launchpad
     steps:
       - uses: actions/checkout@v4
 
@@ -82,6 +88,9 @@ jobs:
             python-version: "3.12"
           - os: windows-latest
             python-version: "3.12"
+    defaults:
+      run:
+        working-directory: packages/ai-launchpad
     steps:
       - uses: actions/checkout@v4
 
