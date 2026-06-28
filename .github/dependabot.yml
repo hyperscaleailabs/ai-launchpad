@@ -1,7 +1,8 @@
 version: 2
 updates:
   - package-ecosystem: pip
-    directory: "/"
+    # The Python package lives in packages/ai-launchpad/.
+    directory: "/packages/ai-launchpad"
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
@@ -12,6 +13,20 @@ updates:
           - "*"
     labels:
       - dependencies
+
+  - package-ecosystem: npm
+    # The website (Astro) lives at the repository root.
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      website-dependencies:
+        patterns:
+          - "*"
+    labels:
+      - dependencies
+      - website
 
   - package-ecosystem: github-actions
     directory: "/"
