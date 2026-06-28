@@ -60,10 +60,29 @@ Commit and push — the deploy rebuilds automatically. See the
 
 ## Deployment
 
-Configured for both **Vercel** (`vercel.json`) and **Netlify**
-(`netlify.toml`). Connect the repo in whichever you prefer and point it at the
-`website/` directory as the project/base directory; the framework is
-auto-detected (build: `npm run build`, output: `dist`).
+Deploys run **from GitHub Actions** (`.github/workflows/website.yml`), gated on
+the build/evidence job passing:
+
+- **Push to `main`** → production deploy
+- **Pull request** → preview deploy (URL shown in the job summary)
+
+Both use the Vercel CLI and require these repository secrets
+(**Settings → Secrets and variables → Actions**):
+
+| Secret | Where to find it |
+| --- | --- |
+| `VERCEL_TOKEN` | Vercel → Account Settings → Tokens → *Create Token* |
+| `VERCEL_ORG_ID` | `website/.vercel/project.json` after running `vercel link`, or Vercel team settings |
+| `VERCEL_PROJECT_ID` | same `project.json`, or the project's Settings → General |
+
+The deploy jobs **skip cleanly** (no failure) until these secrets are set, so CI
+stays green before Vercel is connected.
+
+Vercel's own Git auto-deploy is **disabled** (`git.deploymentEnabled: false` in
+`vercel.json`) so deploys happen only through the gated workflow — no duplicates.
+
+> A `netlify.toml` is also included if you ever prefer Netlify; switching would
+> mean replacing the deploy jobs with a Netlify equivalent.
 
 Before going live, set the production domain in `astro.config.mjs` (the `site`
 constant) so canonical URLs, the sitemap, and the RSS feed are correct.
